@@ -1,6 +1,8 @@
+import 'package:filmovies/Constants.dart';
+import 'package:filmovies/Cubites/AddMovie/add_movie_cubit.dart';
+import 'package:filmovies/Cubites/ApiMovie/api_movie_cubit.dart';
 import 'package:filmovies/Cubites/AuthFirebase/auth_firebase_cubit.dart';
 import 'package:filmovies/Cubites/Mode_cubit/mode_cubit.dart';
-import 'package:filmovies/Helper/Api.dart';
 import 'package:filmovies/Views/HomePage.dart';
 import 'package:filmovies/Views/LoginPage.dart';
 import 'package:filmovies/Views/OnboardingScreen.dart';
@@ -11,14 +13,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "package:flutter_bloc/flutter_bloc.dart";
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await Hive.initFlutter();
+  await Hive.openBox(favMovie);
   runApp(FilmMovie());
- 
 }
 
 class FilmMovie extends StatelessWidget {
@@ -28,11 +33,17 @@ class FilmMovie extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
+        BlocProvider<ModeCubit>(
           create: (context) => ModeCubit(),
         ),
-        BlocProvider(
+        BlocProvider<AuthFirebaseCubit>(
           create: (context) => AuthFirebaseCubit(),
+        ),
+        BlocProvider<ApiMovieCubit>(
+          create: (context) => ApiMovieCubit(),
+        ),
+        BlocProvider<AddMovieCubit>(
+          create: (context) => AddMovieCubit(),
         ),
       ],
       child: BlocBuilder<ModeCubit, bool>(
@@ -48,9 +59,8 @@ class FilmMovie extends StatelessWidget {
               Registerpage.Id: (context) => Registerpage(),
               Loginpage.Id: (context) => Loginpage(),
               Homepage.Id: (context) => Homepage(),
-              
             },
-            initialRoute: Registerpage.Id,
+            initialRoute: SplashScreen.Id,
           );
         },
       ),

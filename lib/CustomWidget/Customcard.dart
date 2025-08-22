@@ -31,16 +31,20 @@ class Customcard1 extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    "${uriimage}${Movie.image}",
+                    "$uriimage${Movie.image}",
                     height: 200,
                     fit: BoxFit.fitWidth,
                   ),
                 ),
               ),
             ),
-            Text(
-              Movie.Title,
-              style: TextStyle(fontSize: 15, color: Textcolor),
+            SizedBox(
+              width: 100,
+              child: Text(
+                Movie.Title,
+                style: TextStyle(fontSize: 15, color: Textcolor),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             Row(
               children: [

@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:filmovies/Helper/Api.dart';
@@ -28,6 +27,19 @@ class ApiMovieCubit extends Cubit<ApiMovieState> {
     try {
       emit(ApiMovieLoading());
       List<dynamic> Movies = await ApiServer().GetYearMovies();
+      List<Moviemodel> popMovies =
+          Movies.map((json) => Moviemodel.fromJson(json)).toList();
+      emit(ApiMovieSeccess());
+      return popMovies;
+    } on Exception catch (e) {
+      emit(ApiMovieFailure(Error: e.toString()));
+      throw Exception(e.toString());
+    }
+  }
+    Future<List<Moviemodel>> getYearrMoviesSearch(int year) async {
+    try {
+      emit(ApiMovieLoading());
+      List<dynamic> Movies = await ApiServer().GetSearchMovies(year);
       List<Moviemodel> popMovies =
           Movies.map((json) => Moviemodel.fromJson(json)).toList();
       emit(ApiMovieSeccess());

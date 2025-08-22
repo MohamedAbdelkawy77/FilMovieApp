@@ -18,7 +18,6 @@ class TextCustomField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
       child: TextFormField(
-        obscureText: true,
         controller: controller,
         validator: (value) {
           if (value!.isEmpty) {

@@ -1,5 +1,6 @@
 import 'package:filmovies/CustomWidget/Customcard.dart';
 import 'package:filmovies/Models/Moviemodel.dart';
+import 'package:filmovies/Views/OverViewPage.dart';
 import 'package:flutter/material.dart';
 
 class Listview1 extends StatelessWidget {
@@ -15,8 +16,19 @@ class Listview1 extends StatelessWidget {
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Customcard1(
-                Movie: popMovies[index],
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          Overviewpage(moviemodel: popMovies[index]),
+                    ),
+                  );
+                },
+                child: Customcard1(
+                  Movie: popMovies[index],
+                ),
               ),
             );
           }),

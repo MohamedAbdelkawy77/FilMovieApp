@@ -110,7 +110,10 @@ class Loginpage extends StatelessWidget {
                               title: "Successful Login",
                               dialogType: DialogType.success,
                               animType: AnimType.rightSlide,
-                              btnOkOnPress: () {},
+                              btnOkOnPress: () {
+                                Navigator.pushReplacementNamed(
+                                    context, Homepage.Id);
+                              },
                             ).show();
                           } else if (state is AuthFirebaseFailure) {
                             AwesomeDialog(
@@ -128,7 +131,6 @@ class Loginpage extends StatelessWidget {
                                 if (formkey.currentState!.validate()) {
                                   context.read<AuthFirebaseCubit>().LoginAuth(
                                       Email: email, password: password);
-                                  Navigator.pushReplacementNamed(context,Homepage.Id);
                                   print("Form is not valid");
                                 } else {
                                   print("Form is valid");

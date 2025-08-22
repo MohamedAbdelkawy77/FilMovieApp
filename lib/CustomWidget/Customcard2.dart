@@ -34,7 +34,7 @@ class Customcard2 extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    "${uriimage}${moviemodel.image}",
+                    "$uriimage${moviemodel.image}",
                     height: 200,
                     fit: BoxFit.fitWidth,
                   ),

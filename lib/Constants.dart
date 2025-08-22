@@ -12,3 +12,7 @@ List<Color> colorlike = const [
   Color(0xFFF78D60),
 ];
 String uriimage = "https://image.tmdb.org/t/p/w500";
+
+String favMovie = "FavMovies";
+
+bool Getstart = false;
