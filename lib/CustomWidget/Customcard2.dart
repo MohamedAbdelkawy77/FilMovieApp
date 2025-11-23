@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filmovies/Constants.dart';
 import 'package:filmovies/CustomWidget/CustomContanierText.dart';
 import 'package:filmovies/Models/Moviemodel.dart';
@@ -9,8 +10,11 @@ class Customcard2 extends StatelessWidget {
     required this.moviemodel,
   });
   final Moviemodel moviemodel;
+
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Padding(
       padding: const EdgeInsets.all(13.0),
       child: Container(
@@ -33,56 +37,70 @@ class Customcard2 extends StatelessWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    "$uriimage${moviemodel.image}",
+                  child: CachedNetworkImage(
+                    imageUrl: "$uriimage${moviemodel.image}",
                     height: 200,
-                    fit: BoxFit.fitWidth,
+                    width: screenWidth * 0.36,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      height: 200,
+                      width: screenWidth * 0.4,
+                      color: Colors.black12,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      height: 200,
+                      width: screenWidth * 0.4,
+                      color: Colors.black26,
+                      child: const Icon(
+                        Icons.broken_image,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 1, top: 40),
-              child: Column(
-                spacing: 10,
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      width: 200,
-                      child: Center(
-                        child: Text(
-                          moviemodel.Title,
-                          style: TextStyle(fontSize: 15, color: Textcolor),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
+            SizedBox(width: 10),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      moviemodel.Title,
+                      style: TextStyle(fontSize: 15, color: Subtitelcolor),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star,
-                        color: Colors.yellow,
-                        size: 20,
-                      ),
-                      Text(
-                        "${moviemodel.rate.floor()}/10 IMDb",
-                        style: TextStyle(color: Descrptioncolor, fontSize: 20),
-                      )
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Customcontaniertext(
-                          text: "DateRelease: ${moviemodel.Date}"),
-                      Customcontaniertext(text: "Langauge: English"),
-                    ],
-                  ),
-                ],
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star,
+                          color: Colors.yellow,
+                          size: 20,
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          "${moviemodel.rate.floor()}/10 IMDb",
+                          style:
+                              TextStyle(color: Descrptioncolor, fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Customcontaniertext(
+                        text: "DateRelease: ${moviemodel.Date}"),
+                    Customcontaniertext(text: "Language: English"),
+                  ],
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),

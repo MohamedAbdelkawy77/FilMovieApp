@@ -1,61 +1,173 @@
 import 'package:filmovies/Constants.dart';
-import 'package:filmovies/CustomWidget/CustomBotton.dart';
-import 'package:filmovies/Views/RegisterPage.dart';
+import 'package:filmovies/Models/OnboardModel.dart';
+import 'package:filmovies/Views/LoginPage.dart';
 import 'package:flutter/material.dart';
 
-class Onboardingscreen extends StatelessWidget {
-  const Onboardingscreen({super.key});
-  static String Id = "Onboarding";
+class OnboardingScreen extends StatefulWidget {
+  static String Id = "OnboardingScreen";
+
+  const OnboardingScreen({super.key});
+
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  int currentIndex = 0;
+  PageController controller = PageController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      alignment: AlignmentDirectional.bottomEnd,
-      children: [
-        Image.asset(
-          "assets/images/Wallpaermovie.jpg",
-          width: MediaQuery.sizeOf(context).width,
-          height: MediaQuery.sizeOf(context).height,
-          fit: BoxFit.cover,
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            width: MediaQuery.sizeOf(context).width,
-            height: 300,
-            decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black,
-                    spreadRadius: 90,
-                    blurRadius: 10000,
-                  ),
-                ],
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20)),
-                color: Colors.white),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(
-                    "FilMovie App is your ultimate companion for exploring the world of movies and TV shows. Discover the latest releases, trending titles, and timeless classics, all in one place. With a clean and modern design, the app makes it easy to find what you love.",
-                    style: TextStyle(
-                        fontSize: 20, color: Descrptioncolor, height: 1.4),
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            PageView.builder(
+              controller: controller,
+              itemCount: onboardData.length,
+              onPageChanged: (index) {
+                setState(() => currentIndex = index);
+              },
+              itemBuilder: (context, index) {
+                return buildPage(
+                  onboardData[index].image,
+                  onboardData[index].title,
+                  onboardData[index].subtitle,
+                );
+              },
+            ),
+
+            // Skip Button
+            Positioned(
+              right: 20,
+              top: 10,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, Loginpage.Id);
+                },
+                child: Text(
+                  "Skip",
+                  style: TextStyle(color: Colors.white70),
+                ),
+              ),
+            ),
+
+            // Dot Indicators
+            Positioned(
+              bottom: 110,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  onboardData.length,
+                  (index) => Container(
+                    margin: EdgeInsets.symmetric(horizontal: 4),
+                    width: currentIndex == index ? 18 : 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color:
+                          currentIndex == index ? colorlike[0] : Colors.white24,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
-                CustomButton(
-                    onpressed: () {
-                      Navigator.pushReplacementNamed(context, Registerpage.Id);
-                    },
-                    text: "GetStarted"),
-              ],
+              ),
+            ),
+
+            // Next Button
+            Positioned(
+              bottom: 40,
+              left: 40,
+              right: 40,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                  backgroundColor: colorlike[0],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                ),
+                onPressed: () {
+                  if (currentIndex == onboardData.length - 1) {
+                    Navigator.pushReplacementNamed(context, Loginpage.Id);
+                  } else {
+                    controller.nextPage(
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.ease,
+                    );
+                  }
+                },
+                child: Text(
+                  "Next",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildPage(String image, String title, String subtitle) {
+    return Stack(
+      children: [
+        // Background Image
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(image),
+              fit: BoxFit.cover,
             ),
           ),
-        )
+        ),
+
+        // Black gradient overlay
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.black.withOpacity(0.8),
+                Colors.black.withOpacity(0.2),
+              ],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            ),
+          ),
+        ),
+
+        // Text Part
+        Positioned(
+          left: 20,
+          right: 20,
+          bottom: 160,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
-    ));
+    );
   }
 }

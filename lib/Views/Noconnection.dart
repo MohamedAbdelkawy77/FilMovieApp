@@ -1,4 +1,4 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
+ 
 import 'package:filmovies/Constants.dart';
 import 'package:filmovies/Views/HomePage.dart';
 import 'package:filmovies/Views/OnboardingScreen.dart';
@@ -33,7 +33,7 @@ class _NoconnectionState extends State<Noconnection> {
                     Future.delayed(const Duration(seconds: 3), () {
                       if (hasInternet) {
                         Navigator.pushReplacementNamed(context,
-                            Getstart ? Homepage.Id : Onboardingscreen.Id);
+                            Getstart ? Homepage.Id : OnboardingScreen.Id);
                       }
                     });
                   },

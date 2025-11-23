@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:filmovies/Constants.dart';
 import 'package:filmovies/Cubites/AddMovie/add_movie_cubit.dart';
 import 'package:filmovies/CustomWidget/CustomContanierText.dart';
@@ -7,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 
 class Overviewpage extends StatefulWidget {
-  Overviewpage({super.key, required this.moviemodel});
+  const Overviewpage({super.key, required this.moviemodel});
   final Moviemodel moviemodel;
 
   @override
@@ -18,54 +19,74 @@ class _OverviewpageState extends State<Overviewpage> {
   @override
   Widget build(BuildContext context) {
     bool saveMovie = Hive.box(favMovie).containsKey(widget.moviemodel.Title);
+
     return Scaffold(
       body: Stack(
-        alignment: AlignmentDirectional.bottomEnd,
         children: [
-          Image.network(
-            "${uriimage}${widget.moviemodel.image}",
-            width: MediaQuery.sizeOf(context).width,
-            height: MediaQuery.sizeOf(context).height,
-            fit: BoxFit.cover,
+          // الخلفية: الصورة كاملة
+          Positioned.fill(
+            child: Image.network(
+              "$uriimage${widget.moviemodel.image}",
+              fit: BoxFit.cover,
+            ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              width: MediaQuery.sizeOf(context).width,
-              height: MediaQuery.sizeOf(context).height / 1.8,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
-                  color: Theme.of(context).cardColor),
-              child: SingleChildScrollView(
-                child: Column(
-                  spacing: 15,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(
-                        widget.moviemodel.Title,
-                        style: TextStyle(fontSize: 25, color: Textcolor),
-                      ),
+
+          // Overlay Glass effect
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  height: MediaQuery.sizeOf(context).height / 1.8,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(25),
+                        topRight: Radius.circular(25)),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.3),
+                      width: 1.5,
                     ),
-                    Row(
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.star,
-                          color: Colors.yellow,
-                          size: 15,
+                        Center(
+                          child: Text(
+                            widget.moviemodel.Title,
+                            style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        Text(
-                          "${widget.moviemodel.rate.floor()}/10 IMDb",
-                          style:
-                              TextStyle(color: Descrptioncolor, fontSize: 20),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 100),
-                          child: BlocBuilder<AddMovieCubit, AddMovieSuccess>(
-                            builder: (context, state) {
-                              return IconButton(
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.star,
+                                    color: Colors.yellow, size: 20),
+                                const SizedBox(width: 5),
+                                Text(
+                                  "${widget.moviemodel.rate.floor()}/10 IMDb",
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ),
+                              ],
+                            ),
+                            BlocBuilder<AddMovieCubit, AddMovieSuccess>(
+                              builder: (context, state) {
+                                return IconButton(
                                   onPressed: () {
                                     var FBox = Hive.box(favMovie);
                                     if (!FBox.containsKey(
@@ -74,59 +95,53 @@ class _OverviewpageState extends State<Overviewpage> {
                                       saveMovie = true;
                                       BlocProvider.of<AddMovieCubit>(context)
                                           .AddFmovies(widget.moviemodel);
-                                    } else if (FBox.containsKey(
-                                        widget.moviemodel.Title)) {
+                                    } else {
                                       FBox.delete(widget.moviemodel.Title);
                                       BlocProvider.of<AddMovieCubit>(context)
                                           .RemoveFmovies(widget.moviemodel);
+                                      saveMovie = false;
                                     }
                                     setState(() {});
-                                    // if (widget.moviemodel.chosse == false) {
-                                    //   widget.moviemodel.chosse = true;
-                                    //   BlocProvider.of<AddMovieCubit>(context)
-                                    //       .AddFmovies(widget.moviemodel);
-                                    // } else if (widget.saveMovie == true) {
-                                    //   BlocProvider.of<AddMovieCubit>(context)
-                                    //       .RemoveFmovies(widget.moviemodel);
-                                    //   widget.saveMovie = false;
-                                    // }
                                   },
-                                  icon: Icon(
-                                    Icons.favorite,
-                                    color:
-                                        saveMovie ? colorlike[2] : Colors.black,
-                                  ));
-                            },
-                          ),
+                                  icon: Icon(Icons.favorite,
+                                      color: saveMovie
+                                          ? colorlike[2]
+                                          : Colors.white),
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Customcontaniertext(
-                            text: "DateRelease: ${widget.moviemodel.Date}"),
-                        Customcontaniertext(text: "Langauge: English"),
-                      ],
-                    ),
-                    Text(
-                      "OverView",
-                      style: TextStyle(fontSize: 25, color: Textcolor),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: SingleChildScrollView(
-                        child: Text(
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Customcontaniertext(
+                                text: "DateRelease: ${widget.moviemodel.Date}"),
+                            const SizedBox(width: 10),
+                            Customcontaniertext(text: "Language: English"),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        const Text(
+                          "Overview",
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
                           widget.moviemodel.Overview,
-                          style:
-                              TextStyle(fontSize: 20, color: Descrptioncolor),
+                          style: const TextStyle(
+                              fontSize: 18, color: Colors.white70),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

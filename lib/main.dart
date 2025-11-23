@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "package:flutter_bloc/flutter_bloc.dart";
 import 'package:firebase_core/firebase_core.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 
 void main() async {
@@ -52,11 +51,11 @@ class FilmMovie extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
                 textTheme: GoogleFonts.chelaOneTextTheme(),
-                brightness: state ? Brightness.dark : Brightness.light),
+                brightness: state ? Brightness.light : Brightness.dark),
             routes: {
               SplashScreen.Id: (context) => SplashScreen(),
-              Onboardingscreen.Id: (context) => Onboardingscreen(),
-              Registerpage.Id: (context) => Registerpage(),
+              OnboardingScreen.Id: (context) => OnboardingScreen(),
+              RegisterPage.Id: (context) => RegisterPage(),
               Loginpage.Id: (context) => Loginpage(),
               Homepage.Id: (context) => Homepage(),
             },

@@ -1,7 +1,8 @@
-
 import 'package:bloc/bloc.dart';
+import 'package:filmovies/Constants.dart';
 import 'package:filmovies/Helper/Api.dart';
 import 'package:filmovies/Models/Moviemodel.dart';
+import 'package:filmovies/Models/TVmodel.dart';
 import 'package:meta/meta.dart';
 
 part 'api_movie_state.dart';
@@ -36,13 +37,44 @@ class ApiMovieCubit extends Cubit<ApiMovieState> {
       throw Exception(e.toString());
     }
   }
-    Future<List<Moviemodel>> getYearrMoviesSearch(int year) async {
+
+  Future<List<Moviemodel>> getYearrMoviesSearch(int year) async {
     try {
       emit(ApiMovieLoading());
       List<dynamic> Movies = await ApiServer().GetSearchMovies(year);
       List<Moviemodel> popMovies =
           Movies.map((json) => Moviemodel.fromJson(json)).toList();
       emit(ApiMovieSeccess());
+      return popMovies;
+    } on Exception catch (e) {
+      emit(ApiMovieFailure(Error: e.toString()));
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<List<Moviemodel>> getmoviebyCategory(String category) async {
+    try {
+      emit(ApiMovieLoading());
+      List<dynamic> Movies =
+          await ApiServer().GetSearchMoviesByCategory(category);
+      List<Moviemodel> popMovies =
+          Movies.map((json) => Moviemodel.fromJson(json)).toList();
+      emit(ApiMovieSeccess());
+      return popMovies;
+    } on Exception catch (e) {
+      emit(ApiMovieFailure(Error: e.toString()));
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<List<TVmodel>> getmoviebyNetwork(String Network) async {
+    try {
+      emit(ApiMovieLoading());
+      List<dynamic> Movies = await ApiServer().GetTVShowsByNetwork(Network);
+      List<TVmodel> popMovies =
+          Movies.map((json) => TVmodel.fromJson(json)).toList();
+      emit(ApiMovieSeccess());
+      print(popMovies[0].Title);
       return popMovies;
     } on Exception catch (e) {
       emit(ApiMovieFailure(Error: e.toString()));

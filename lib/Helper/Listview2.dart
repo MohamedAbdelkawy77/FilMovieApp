@@ -25,8 +25,11 @@ class Listview2 extends StatelessWidget {
                   ),
                 );
               },
-              child: Customcard2(
-                moviemodel: yearMovies[index],
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Customcard2(
+                  moviemodel: yearMovies[index],
+                ),
               ),
             ),
           );
